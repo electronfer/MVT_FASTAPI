@@ -37,7 +37,8 @@ async def read_all_by_user(request: Request, db: Session = Depends(get_db)):
     if user is None:
         return RedirectResponse(url="/auth/", status_code=status.HTTP_302_FOUND)
 
-    todos = db.query(models.Todos).filter(models.Todos.owner_id == user.get("id")).all()
+    todos = db.query(models.Todos).filter(
+        models.Todos.owner_id == user.get("id")).all()
 
     return templates.TemplateResponse("home.html", {"request": request, "todos": todos, "user": user})
 
@@ -48,7 +49,7 @@ async def add_new_todo(request: Request):
     user = await get_current_user(request)
     if user is None:
         return RedirectResponse(url="/auth/", status_code=status.HTTP_302_FOUND)
-    
+
     return templates.TemplateResponse("add-todo.html", {"request": request, "user": user})
 
 
@@ -64,7 +65,7 @@ async def create_todo(
     user = await get_current_user(request)
     if user is None:
         return RedirectResponse(url="/auth/", status_code=status.HTTP_302_FOUND)
-    
+
     todo_model = models.Todos()
     todo_model.title = title
     todo_model.description = description
@@ -104,7 +105,8 @@ async def edit_todo_commit(
     if user is None:
         return RedirectResponse(url="/auth/", status_code=status.HTTP_302_FOUND)
 
-    todo_model = db.query(models.Todos).filter( models.Todos.id == todo_id).first()
+    todo_model = db.query(models.Todos).filter(
+        models.Todos.id == todo_id).first()
 
     todo_model.title = title
     todo_model.description = description
@@ -126,16 +128,16 @@ async def delete_todo(
     user = await get_current_user(request)
     if user is None:
         return RedirectResponse(url="/auth/", status_code=status.HTTP_302_FOUND)
-    
+
     todo_model = db.query(models.Todos)\
         .filter(models.Todos.id == todo_id)\
         .filter(models.Todos.owner_id == user.get("id"))\
         .first()
-    
+
     if todo_model is None:
         return RedirectResponse(url="/todos/", status_code=status.HTTP_302_FOUND)
-    
-    db.query( models.Todos ).filter( models.Todos.id == todo_id ).delete()
+
+    db.query(models.Todos).filter(models.Todos.id == todo_id).delete()
 
     db.commit()
 
@@ -151,7 +153,7 @@ async def complete_todo(
     user = await get_current_user(request)
     if user is None:
         return RedirectResponse(url="/auth/", status_code=status.HTTP_302_FOUND)
-    
+
     todo = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
 
     todo.complete = not todo.complete
