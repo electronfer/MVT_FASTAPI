@@ -1,3 +1,12 @@
+# Execution using a virtual environment
+```bash
+bash execution.sh --run_local
+```
+
+# Execution using Docker container
+```bash
+bash execution.sh --run_docker
+```
 # 🫱 Libraries used in the application
 
 > Backend
